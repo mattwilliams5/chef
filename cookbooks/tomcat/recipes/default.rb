@@ -42,6 +42,9 @@ directory '/opt/tomcat/apache-tomcat-8.5.9/' do
   mode '0755'
 end
 
-file '/etc/systemd/system/tomcat.service' do
-  action :create
+template '/etc/systemd/system/tomcat.service' do
+  source 'tomcat.service.erb'
+  mode 0644
+  owner 'root'
+  group 'root'
 end
