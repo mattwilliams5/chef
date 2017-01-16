@@ -28,18 +28,23 @@ remote_file 'apache-tomcat-8.5.9.tar.gz' do
 end
 
 execute 'untar appache' do
-  command 'tar zxf /apache-tomcat-8.5.9.tar.gz -C /opt/tomcat'
-end
-
-execute 'update permissions' do
-  command 'chown -R tomcat.tomcat /opt/tomcat/apache-tomcat-8.5.9/* && chmod 0755 /opt/tomcat/apache-tomcat-8.5.9/*'
+  command 'tar zxf /apache-tomcat-8.5.9.tar.gz --strip-components=1 -C /opt/tomcat'
 end
 
 directory '/opt/tomcat/apache-tomcat-8.5.9/' do
+  action :delete
+  recursive true
+end
+
+execute 'update permissions' do
+  command 'chown -R tomcat.tomcat /opt/tomcat/* && chmod 0755 /opt/tomcat/*'
+end
+
+directory '/opt/tomcat/' do
   owner 'tomcat'
   group 'tomcat'
-  recursive true
   mode '0755'
+  recursive true
 end
 
 template '/etc/systemd/system/tomcat.service' do
@@ -47,4 +52,8 @@ template '/etc/systemd/system/tomcat.service' do
   mode 0644
   owner 'root'
   group 'root'
+end
+
+service 'tomcat' do
+  action [:start, :enable]
 end
