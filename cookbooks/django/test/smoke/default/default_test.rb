@@ -1,5 +1,3 @@
-require 'serverspec'
-
 # # encoding: utf-8
 
 # Inspec test for recipe django::default
@@ -7,8 +5,14 @@ require 'serverspec'
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
-describe 'django::default' do
-  describe command ('django-admin --version') do
-    its(:stdout) { should match(/1.8.7/) }
+unless os.windows?
+  describe user('root') do
+    it { should exist }
+    skip 'This is an example test, replace with your own test.'
   end
+end
+
+describe port(80) do
+  it { should_not be_listening }
+  skip 'This is an example test, replace with your own test.'
 end
